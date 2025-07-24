@@ -143,7 +143,8 @@ export default function GradeAssignmentsPage() {
   const [selectedAssignment, setSelectedAssignment] = useState('all');
   const [currentGrade, setCurrentGrade] = useState(selectedSubmission.grade || 0);
   const [currentFeedback, setCurrentFeedback] = useState(selectedSubmission.feedback || '');
-  const [rubricScores, setRubricScores] = useState(selectedSubmission.rubricScores);
+  const [rubricScores, setRubricScores] = useState<{ [key: string]: number | null }>({});
+
 
   const statuses = ['all', 'Submitted', 'Graded', 'Needs Review', 'Late'];
   const assignments = ['all', 'React Component Architecture', 'JavaScript ES6 Quiz', 'Node.js API Development'];

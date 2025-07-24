@@ -39,14 +39,14 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  ResponsiveContainer,
   BarChart,
   Bar,
-  PieChart as RechartsPieChart,
   Cell,
   RadialBarChart,
   RadialBar
 } from 'recharts';
+import { Pie, PieChart as RechartsPieChart, ResponsiveContainer } from 'recharts';
+
 
 const studentProgress = [
   {
