@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useTheme } from 'next-themes';
-import { Search, Bell, Settings, Sun, Moon, User, LogOut } from 'lucide-react';
+import { Search, Bell, Menu, ChevronDown, Moon, Sun, User, Settings, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -19,7 +19,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { Badge } from '@/components/ui/badge';
+import Image from 'next/image';
 
 const notifications = [
   {
@@ -42,18 +42,41 @@ const notifications = [
   },
 ];
 
-export function Navbar() {
+export function Navbar({ onMobileMenuToggle }: { onMobileMenuToggle?: () => void }) {
   const { theme, setTheme } = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
   const unreadCount = notifications.filter(n => n.unread).length;
 
   return (
-    <header className="h-16 border-b border-border/50 bg-background/80 backdrop-blur-sm">
-      <div className="flex items-center justify-between h-full px-6">
-        {/* Search Bar */}
-        <div className="flex items-center flex-1 max-w-md">
-          <div className="relative w-full">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+    <header className="fixed top-0 left-0 right-0 z-40 h-18 flex items-center px-6 bg-background/80 backdrop-blur-sm">
+      <div className="flex items-center justify-between w-full">
+        
+        {/* Left Section - Hamburger & Logo */}
+        <div className="flex items-center space-x-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onMobileMenuToggle}
+            className="lg:hidden p-2 hover:bg-muted rounded-xl"
+          >
+            <Menu className="w-5 h-5 text-foreground" />
+          </Button>
+
+          <div className="flex items-center space-x-2">
+            <Image
+              src="/lms.webp"
+              alt="EduFlow Logo"
+              width={54}
+              height={20}
+            />
+            <h1 className='text-foreground'> Teacher Panel</h1>
+          </div>
+        </div>
+
+        {/* Center - Search */}
+        <div className="hidden md:block w-full max-w-md mx-8">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
               placeholder="Search students, courses, assignments..."
               value={searchQuery}
@@ -64,30 +87,31 @@ export function Navbar() {
         </div>
 
         {/* Right Section */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center space-x-4">
+          
           {/* Theme Toggle */}
           <Button
             variant="ghost"
-            size="icon"
+            size="sm"
             onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-            className="rounded-xl hover:bg-accent/50"
+            className="p-2 hover:bg-muted rounded-xl"
           >
             {theme === 'light' ? (
               <Moon className="w-5 h-5" />
             ) : (
-              <Sun className="w-5 h-5" />
+              <Sun className="w-5 h-5 text-yellow-400" />
             )}
           </Button>
 
           {/* Notifications */}
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant="ghost" size="icon" className="relative rounded-xl hover:bg-accent/50">
-                <Bell className="w-5 h-5" />
+              <Button variant="ghost" size="sm" className="relative p-2 hover:bg-muted rounded-xl">
+                <Bell className="w-5 h-5 text-foreground" />
                 {unreadCount > 0 && (
-                  <Badge className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center p-0 text-xs gradient-bg border-0">
-                    {unreadCount}
-                  </Badge>
+                  <span className="absolute -top-1 -right-1 w-3 h-3 bg-[#A6E86D] rounded-full ">
+                    <span className="absolute inset-0 w-3 h-3 bg-[#A6E86D] rounded-full animate-ping"></span>
+                  </span>
                 )}
               </Button>
             </PopoverTrigger>
@@ -104,7 +128,9 @@ export function Navbar() {
                     <div
                       key={index}
                       className={`p-3 rounded-lg border transition-colors hover:bg-accent/50 ${
-                        notification.unread ? 'bg-blue-50/50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800' : 'bg-muted/30'
+                        notification.unread
+                          ? 'bg-blue-50/50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800'
+                          : 'bg-muted/30'
                       }`}
                     >
                       <div className="flex items-start justify-between">
@@ -124,15 +150,16 @@ export function Navbar() {
             </PopoverContent>
           </Popover>
 
-          {/* User Menu */}
+          {/* User Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                <Avatar className="h-10 w-10">
-                  <AvatarImage src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1" alt="Teacher" />
+              <div className="flex items-center space-x-2 cursor-pointer">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg" alt="Teacher" />
                   <AvatarFallback>DR</AvatarFallback>
                 </Avatar>
-              </Button>
+                <ChevronDown className="w-4 h-4 text-muted-foreground" />
+              </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end" forceMount>
               <DropdownMenuLabel className="font-normal">

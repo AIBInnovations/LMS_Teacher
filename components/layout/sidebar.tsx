@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import {
   LayoutDashboard,
@@ -14,8 +13,6 @@ import {
   BarChart3,
   MessageSquare,
   Settings,
-  Menu,
-  X,
   GraduationCap,
   ChevronDown,
   Plus,
@@ -30,7 +27,6 @@ import {
   CheckSquare
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 const navigation = [
   {
@@ -107,86 +103,75 @@ const navigation = [
 ];
 
 interface SidebarProps {
-  className?: string;
+  isMobileOpen: boolean;
+  onMobileClose: () => void;
+  currentPage?: string;
 }
 
-export function Sidebar({ className }: SidebarProps) {
-  const pathname = usePathname();
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [openItems, setOpenItems] = useState<string[]>(['Course Management']);
+export default function TeacherSidebar({ isMobileOpen, onMobileClose, currentPage }: SidebarProps) {
+  const [openDropdown, setOpenDropdown] = useState<string | null>('Course Management');
 
-  const toggleItem = (name: string) => {
-    setOpenItems(prev =>
-      prev.includes(name)
-        ? prev.filter(item => item !== name)
-        : [...prev, name]
-    );
+  const toggleDropdown = (name: string) => {
+    setOpenDropdown(prev => (prev === name ? null : name));
   };
 
   const SidebarContent = () => (
-    <div className="flex flex-col h-full">
-      {/* Logo */}
-      <div className="flex items-center gap-2 px-6 py-4 border-b border-border/50">
-        <div className="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center">
-          <GraduationCap className="w-5 h-5 text-white" />
-        </div>
-        <span className="font-bold text-lg gradient-text">TeachPanel</span>
-      </div>
-
+    <div className="flex flex-col h-full ">    
       {/* Navigation */}
-      <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+      <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto scrollbar-hide">
         {navigation.map((item) => {
           if (item.children) {
             return (
-              <Collapsible
-                key={item.name}
-                open={openItems.includes(item.name)}
-                onOpenChange={() => toggleItem(item.name)}
-              >
-                <CollapsibleTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-between hover:bg-accent/50 transition-colors rounded-xl"
-                  >
-                    <div className="flex items-center gap-3">
-                      <item.icon className="w-5 h-5" />
-                      <span className="font-medium">{item.name}</span>
-                    </div>
-                    <ChevronDown
-                      className={cn(
-                        "w-4 h-4 transition-transform",
-                        openItems.includes(item.name) && "rotate-180"
-                      )}
-                    />
-                  </Button>
-                </CollapsibleTrigger>
-                <CollapsibleContent className="mt-2 space-y-1">
-                  {item.children.map((child) => (
-                    <Link key={child.href} href={child.href}>
-                      <Button
-                        variant="ghost"
-                        className={cn(
-                          "w-full justify-start pl-12 hover:bg-accent/50 transition-colors rounded-xl",
-                          pathname === child.href && "bg-accent text-accent-foreground"
-                        )}
-                      >
-                        <child.icon className="w-4 h-4 mr-3" />
-                        {child.name}
-                      </Button>
-                    </Link>
-                  ))}
-                </CollapsibleContent>
-              </Collapsible>
+              <div key={item.name}>
+                <Button
+                  variant="ghost"
+                  onClick={() => toggleDropdown(item.name)}
+                  className={cn(
+                    "w-full justify-between hover:bg-muted transition-colors rounded-lg",
+                    openDropdown === item.name && "bg-muted"
+                  )}
+                >
+                  <div className="flex items-center gap-3">
+                    <item.icon className="w-5 h-5" />
+                    <span className="font-medium">{item.name}</span>
+                  </div>
+                  <ChevronDown
+                    className={cn(
+                      "w-4 h-4 transition-transform",
+                      openDropdown === item.name && "rotate-180"
+                    )}
+                  />
+                </Button>
+
+                {openDropdown === item.name && (
+                  <div className="mt-2 space-y-1">
+                    {item.children.map((child) => (
+                      <Link key={child.href} href={child.href} onClick={onMobileClose}>
+                        <Button
+                          variant="ghost"
+                          className={cn(
+                            "w-full justify-start pl-12 hover:bg-muted transition-colors rounded-lg",
+                            currentPage === child.href && "bg-muted border-r-2 border-blue-500"
+                          )}
+                        >
+                          <child.icon className="w-4 h-4 mr-3" />
+                          {child.name}
+                        </Button>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
             );
           }
 
           return (
-            <Link key={item.href} href={item.href}>
+            <Link key={item.href} href={item.href} onClick={onMobileClose}>
               <Button
                 variant="ghost"
                 className={cn(
-                  "w-full justify-start hover:bg-accent/50 transition-colors rounded-xl",
-                  pathname === item.href && "bg-gradient-to-r from-blue-500/10 to-purple-500/10 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800"
+                  "w-full justify-start hover:bg-muted transition-colors rounded-lg",
+                  currentPage === item.href && "bg-muted border-r-2 border-blue-500"
                 )}
               >
                 <item.icon className="w-5 h-5 mr-3" />
@@ -201,33 +186,29 @@ export function Sidebar({ className }: SidebarProps) {
 
   return (
     <>
-      {/* Mobile Menu Button */}
-      <Button
-        variant="ghost"
-        size="icon"
-        className="lg:hidden fixed top-4 left-4 z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border border-border rounded-xl"
-        onClick={() => setIsMobileOpen(!isMobileOpen)}
-      >
-        {isMobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-      </Button>
-
-      {/* Desktop Sidebar */}
-      <div className={cn(
-        "hidden lg:flex flex-col w-64 sidebar-gradient border-r border-border/50",
-        className
-      )}>
-        <SidebarContent />
-      </div>
+      {/* Mobile Overlay */}
+      {isMobileOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 z-40 lg:hidden"
+          onClick={onMobileClose}
+        />
+      )}
 
       {/* Mobile Sidebar */}
-      {isMobileOpen && (
-        <div className="lg:hidden fixed inset-0 z-40">
-          <div className="fixed inset-0 bg-black/20 backdrop-blur-sm" onClick={() => setIsMobileOpen(false)} />
-          <div className="fixed left-0 top-0 bottom-0 w-64 sidebar-gradient border-r border-border/50">
-            <SidebarContent />
-          </div>
-        </div>
-      )}
+      <aside
+        className={cn(
+          "lg:hidden fixed top-0 left-0 z-50 h-full w-64 transition-transform duration-300 shadow-xl",
+          "bg-background text-foreground",
+          isMobileOpen ? "translate-x-0" : "-translate-x-full"
+        )}
+      >
+        <SidebarContent />
+      </aside>
+
+      {/* Desktop Sidebar */}
+      <nav className="hidden lg:block h-full overflow-y-auto bg-background text-foreground ">
+        <SidebarContent />
+      </nav>
     </>
   );
 }
