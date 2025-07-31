@@ -1,16 +1,17 @@
 "use client";
 
 import React, { useState } from "react";
+import { usePathname } from 'next/navigation';
 import Sidebar from "./sidebar";
 import { Navbar } from "./navbar";
 
 interface MainLayoutProps {
   children: React.ReactNode;
-  currentPage?: string;
 }
 
-export function MainLayout({ children, currentPage }: MainLayoutProps) {
+export function MainLayout({ children }: MainLayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname(); // Get current route
 
   return (
     <div className="h-screen w-screen flex flex-col bg-background text-foreground overflow-hidden scrollbar-hide">
@@ -28,7 +29,7 @@ export function MainLayout({ children, currentPage }: MainLayoutProps) {
           <div className="w-full h-full overflow-y-auto">
             <Sidebar 
               isMobileOpen={false}
-              currentPage={currentPage}
+              currentPage={pathname} // Pass the current pathname
               onMobileClose={() => {}}
             />
           </div>
@@ -46,7 +47,7 @@ export function MainLayout({ children, currentPage }: MainLayoutProps) {
       <div className="lg:hidden">
         <Sidebar 
           isMobileOpen={mobileMenuOpen}
-          currentPage={currentPage}
+          currentPage={pathname} // Pass the current pathname
           onMobileClose={() => setMobileMenuOpen(false)}
         />
       </div>

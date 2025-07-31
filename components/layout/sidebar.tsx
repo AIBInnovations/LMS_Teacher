@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard,
   BookOpen,
@@ -55,18 +56,13 @@ const navigation = [
     ],
   },
   {
-    name: 'Assignments & Grading',
+    name: 'Assignments',
     icon: FileText,
     children: [
       { name: 'Create Assignment', href: '/assignments/create', icon: Plus },
       { name: 'Grade Assignments', href: '/assignments/grade', icon: CheckSquare },
       { name: 'Peer Review', href: '/assignments/peer-review', icon: UserCheck },
     ],
-  },
-  {
-    name: 'Quizzes & Exams',
-    href: '/quizzes',
-    icon: HelpCircle,
   },
   {
     name: 'Live Classes',
@@ -96,6 +92,11 @@ const navigation = [
     ],
   },
   {
+    name: 'Quizzes & Exams',
+    href: '/quizzes',
+    icon: HelpCircle,
+  },
+  {
     name: 'Settings',
     href: '/settings',
     icon: Settings,
@@ -109,14 +110,39 @@ interface SidebarProps {
 }
 
 export default function TeacherSidebar({ isMobileOpen, onMobileClose, currentPage }: SidebarProps) {
-  const [openDropdown, setOpenDropdown] = useState<string | null>('Course Management');
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+
+  // Function to check if a path is active - EXACT matching only
+  const isPathActive = (href: string, currentPath?: string) => {
+    if (!currentPath) return false;
+    
+    // Only exact matches
+    return currentPath === href;
+  };
+
+  // Function to check if any child is active (for auto-expanding dropdowns)
+  const hasActiveChild = (children: any[], currentPath?: string) => {
+    if (!currentPath || !children) return false;
+    return children.some(child => currentPath === child.href);
+  };
+
+  // Auto-expand dropdown if current page is a child item
+  useEffect(() => {
+    if (currentPage) {
+      navigation.forEach((item) => {
+        if (item.children && hasActiveChild(item.children, currentPage)) {
+          setOpenDropdown(item.name);
+        }
+      });
+    }
+  }, [currentPage]);
 
   const toggleDropdown = (name: string) => {
     setOpenDropdown(prev => (prev === name ? null : name));
   };
 
   const SidebarContent = () => (
-    <div className="flex flex-col h-full ">    
+    <div className="flex flex-col h-full">    
       {/* Navigation */}
       <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto scrollbar-hide">
         {navigation.map((item) => {
@@ -145,20 +171,24 @@ export default function TeacherSidebar({ isMobileOpen, onMobileClose, currentPag
 
                 {openDropdown === item.name && (
                   <div className="mt-2 space-y-1">
-                    {item.children.map((child) => (
-                      <Link key={child.href} href={child.href} onClick={onMobileClose}>
-                        <Button
-                          variant="ghost"
-                          className={cn(
-                            "w-full justify-start pl-12 hover:bg-muted transition-colors rounded-lg",
-                            currentPage === child.href && "bg-muted border-r-2 border-blue-500"
-                          )}
-                        >
-                          <child.icon className="w-4 h-4 mr-3" />
-                          {child.name}
-                        </Button>
-                      </Link>
-                    ))}
+                    {item.children.map((child) => {
+                      const isActive = isPathActive(child.href, currentPage);
+                      
+                      return (
+                        <Link key={child.href} href={child.href} onClick={onMobileClose}>
+                          <Button
+                            variant="ghost"
+                            className={cn(
+                              "w-full justify-start pl-12 hover:bg-muted transition-colors rounded-lg",
+                              isActive && "bg-muted"
+                            )}
+                          >
+                            <child.icon className="w-4 h-4 mr-3" />
+                            {child.name}
+                          </Button>
+                        </Link>
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -171,7 +201,7 @@ export default function TeacherSidebar({ isMobileOpen, onMobileClose, currentPag
                 variant="ghost"
                 className={cn(
                   "w-full justify-start hover:bg-muted transition-colors rounded-lg",
-                  currentPage === item.href && "bg-muted border-r-2 border-blue-500"
+                  isPathActive(item.href, currentPage) && "bg-muted border-r-2 border-blue-500"
                 )}
               >
                 <item.icon className="w-5 h-5 mr-3" />
@@ -206,7 +236,7 @@ export default function TeacherSidebar({ isMobileOpen, onMobileClose, currentPag
       </aside>
 
       {/* Desktop Sidebar */}
-      <nav className="hidden lg:block h-full overflow-y-auto bg-background text-foreground ">
+      <nav className="hidden lg:block h-full overflow-y-auto bg-background text-foreground">
         <SidebarContent />
       </nav>
     </>

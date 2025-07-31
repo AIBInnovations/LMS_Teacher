@@ -133,7 +133,7 @@ export default function CreateCoursePage() {
 
   return (
     <MainLayout>
-      <div className="max-w-4xl mx-auto space-y-8">
+      <div className=" mx-auto space-y-8">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
@@ -291,50 +291,52 @@ export default function CreateCoursePage() {
                 </div>
 
                 {/* Course Image Upload */}
-                <div className="space-y-2">
-                  <Label>Course Thumbnail</Label>
-                  <div className="border-2 border-dashed border-muted-foreground/25 rounded-xl p-6 text-center hover:border-muted-foreground/50 transition-colors">
-                    {previewImage ? (
-                      <div className="relative">
-                        <img
-                          src={previewImage}
-                          alt="Course preview"
-                          className="w-full h-48 object-cover rounded-lg"
-                        />
-                        <Button
-                          type="button"
-                          variant="destructive"
-                          size="icon"
-                          className="absolute top-2 right-2 w-8 h-8 rounded-full"
-                          onClick={() => {
-                            setPreviewImage('');
-                            setCourseData({ ...courseData, courseImage: null });
-                          }}
-                        >
-                          <X className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    ) : (
-                      <div className="space-y-2">
-                        <Upload className="w-8 h-8 text-muted-foreground mx-auto" />
-                        <div>
-                          <p className="text-sm text-muted-foreground">
-                            Click to upload or drag and drop
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            SVG, PNG, JPG or GIF (max. 2MB)
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                    />
-                  </div>
-                </div>
+                {/* Course Image Upload */}
+<div className="space-y-2">
+  <Label>Course Thumbnail</Label>
+  <div className="relative border-2 border-dashed border-muted-foreground/25 rounded-xl p-6 text-center hover:border-muted-foreground/50 transition-colors">
+    {previewImage ? (
+      <div className="relative">
+        <img
+          src={previewImage}
+          alt="Course preview"
+          className="w-full h-48 object-cover rounded-lg"
+        />
+        <Button
+          type="button"
+          variant="destructive"
+          size="icon"
+          className="absolute top-2 right-2 w-8 h-8 rounded-full"
+          onClick={() => {
+            setPreviewImage('');
+            setCourseData({ ...courseData, courseImage: null });
+          }}
+        >
+          <X className="w-4 h-4" />
+        </Button>
+      </div>
+    ) : (
+      <div className="space-y-2">
+        <Upload className="w-8 h-8 text-muted-foreground mx-auto" />
+        <div>
+          <p className="text-sm text-muted-foreground">
+            Click to upload or drag and drop
+          </p>
+          <p className="text-xs text-muted-foreground">
+            SVG, PNG, JPG or GIF (max. 2MB)
+          </p>
+        </div>
+      </div>
+    )}
+    <input
+      type="file"
+      accept="image/*"
+      onChange={handleImageUpload}
+      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+    />
+  </div>
+</div>
+
 
                 {/* Tags */}
                 <div className="space-y-2">

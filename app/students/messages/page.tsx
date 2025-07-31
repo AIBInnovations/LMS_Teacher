@@ -225,18 +225,42 @@ export default function StudentMessagesPage() {
     <MainLayout>
       <div className="space-y-8">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        {/* <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold gradient-text">Student Messages</h1>
             <p className="text-muted-foreground mt-2">
               Communicate with your students and manage course-related discussions.
             </p>
           </div>
-          <Dialog open={isComposeOpen} onOpenChange={setIsComposeOpen}>
+         
+        </div>
+         */}
+
+        {/* Messages Interface */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[600px]">
+          {/* Conversations List */}
+          <Card className="card-gradient border-0">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <MessageSquare className="w-5 h-5" />
+                  Conversations
+                </CardTitle>
+                <Select value={selectedFilter} onValueChange={setSelectedFilter}>
+                  <SelectTrigger className="w-24 h-8 rounded-lg border-0 bg-background/50">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All</SelectItem>
+                    <SelectItem value="unread">Unread</SelectItem>
+                    <SelectItem value="priority">Priority</SelectItem>
+                    <SelectItem value="archived">Archived</SelectItem>
+                  </SelectContent>
+                </Select>
+                 <Dialog open={isComposeOpen} onOpenChange={setIsComposeOpen}>
             <DialogTrigger asChild>
               <Button className="gradient-bg hover:opacity-90 rounded-xl">
-                <Plus className="w-4 h-4 mr-2" />
-                Compose Message
+                <Plus className="w-4 h-4" />                
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-2xl">
@@ -317,79 +341,6 @@ export default function StudentMessagesPage() {
               </DialogFooter>
             </DialogContent>
           </Dialog>
-        </div>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card className="card-gradient border-0">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Total Messages</p>
-                  <h3 className="text-2xl font-bold mt-2">1,247</h3>
-                </div>
-                <MessageSquare className="w-8 h-8 text-blue-600 dark:text-blue-400" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="card-gradient border-0">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Unread Messages</p>
-                  <h3 className="text-2xl font-bold mt-2">23</h3>
-                </div>
-                <Badge className="w-8 h-8 rounded-full bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400 flex items-center justify-center">
-                  !
-                </Badge>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="card-gradient border-0">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Active Conversations</p>
-                  <h3 className="text-2xl font-bold mt-2">156</h3>
-                </div>
-                <Users className="w-8 h-8 text-green-600 dark:text-green-400" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="card-gradient border-0">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Avg. Response Time</p>
-                  <h3 className="text-2xl font-bold mt-2">2.4h</h3>
-                </div>
-                <Clock className="w-8 h-8 text-purple-600 dark:text-purple-400" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Messages Interface */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[600px]">
-          {/* Conversations List */}
-          <Card className="card-gradient border-0">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2">
-                  <MessageSquare className="w-5 h-5" />
-                  Conversations
-                </CardTitle>
-                <Select value={selectedFilter} onValueChange={setSelectedFilter}>
-                  <SelectTrigger className="w-24 h-8 rounded-lg border-0 bg-background/50">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All</SelectItem>
-                    <SelectItem value="unread">Unread</SelectItem>
-                    <SelectItem value="priority">Priority</SelectItem>
-                    <SelectItem value="archived">Archived</SelectItem>
-                  </SelectContent>
-                </Select>
               </div>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
