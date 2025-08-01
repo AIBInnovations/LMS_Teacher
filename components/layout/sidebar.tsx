@@ -74,15 +74,6 @@ const navigation = [
     ],
   },
   {
-    name: 'Analytics & Reports',
-    icon: BarChart3,
-    children: [
-      { name: 'Student Performance', href: '/analytics/students', icon: TrendingUp },
-      { name: 'Course Analytics', href: '/analytics/courses', icon: BarChart3 },
-      { name: 'Download Reports', href: '/analytics/reports', icon: Download },
-    ],
-  },
-  {
     name: 'Communication',
     icon: MessageSquare,
     children: [
@@ -90,6 +81,12 @@ const navigation = [
       { name: 'Discussion Forum', href: '/communication/forum', icon: MessageSquare },
       { name: 'Live Chat', href: '/communication/chat', icon: MessageCircle },
     ],
+  },
+  
+  {
+    name: 'Analytics & Reports',
+    href: '/analytics',
+    icon: BarChart3,  
   },
   {
     name: 'Quizzes & Exams',
